@@ -1,7 +1,7 @@
 <template >
   <b-form @submit="onSubmit" @reset="onReset">
      
-       <p v-if="lol == 'papa'">You have been registred go Sign-in now</p>
+       <p v-if="lol == true">You have been registred go Sign-in now</p>
     <b-form-group id="input-group-1" label="Your Name:" label-for="input-1">
       <b-form-input
         id="input-1"
@@ -46,21 +46,20 @@ export default {
         name: "",
         password: "",
       },
-      lol: "",
+      lol: false,
     };
   },
   methods: {
     onSubmit(evt) {
+      console.log('lol')
       evt.preventDefault();
             this.axios
         .post("http://localhost:8000/sign-up", this.form)
-        .then((response) => { if ( this.form = response) {
-            this.lol = 'papa'
-        }
-          // alert(JSON.stringify(this.form));
-          console.log('You have been registred go Sign-in now')
-          })
-        .catch(function(error) {
+        .then((response) => {
+            this.lol = true
+            console.log('You have been registred go Sign-in now')
+        })
+          .catch(function(error) {
           console.log(error);
         });
       

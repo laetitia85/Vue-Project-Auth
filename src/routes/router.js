@@ -8,8 +8,7 @@ require("dotenv").config();
 
 
 app.post("/sign-up", (req, res) => {
-  bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
-    //crypte le msg entré par l'utilisateur
+  bcrypt.hash(req.body.password, saltRounds, function (err, hash) {                                                                                                                 //crypte le msg entré par l'utilisateur
 
     const newUser = {
       name: req.body.name,
@@ -21,11 +20,8 @@ app.post("/sign-up", (req, res) => {
       if (err) {
         console.log("error:", err);
       }
-      let token = jwt.sign({ result }, process.env.jwtKey, { expiresIn: 86400 // expires in 24 hours
-      });
-      console.log(token);
+        res.status(200).send(result);
       // console.log("created user:" , {id: res.insertId, ...newUser});
-      res.status(200).send({ auth: true, token: token });
     });
   });
 });
@@ -34,21 +30,13 @@ app.post("/sign-in", (req, res) => {
   sql.query(
     `SELECT * FROM user WHERE email = '${req.body.email}'`,
     (err, result) => {
-      bcrypt.compare(req.body.password, result[0].password, function (
-        err,
-        resultat
-      ) {
-        //compare le password entré par l'utilisateur avoir le password crypté
-
-        console.log(result[0].password);
-        if (resultat) {
-          //si c'est true renvoie le résultat
-
-          res.status(200).send({
-            msg: "you are authenticated",
-          });
-        } else {
-          //sinon c'est false alors renvoie le msg d'erreur
+    
+      bcrypt.compare(req.body.password, result[0].password, function (erro,resultat) {                                                              //compare le password entré par l'utilisateur avoir le password crypt
+        if (resultat) {                                                                                                                             //si c'est true renvoie le résultat
+          let token = jwt.sign({email : req.body.email}, process.env.jwtKey, { expiresIn: 86400 // expires in 24 hours
+          })
+          res.status(200).send({auth: true, token: token });
+        } else {                                                                                                                                    //sinon c'est false alors renvoie le msg d'erreur
           res.status(404).send({
             msg: "Sorry, we don't know this user",
           });
